@@ -1,27 +1,21 @@
-const { body, validationResult } = require("express-validator");
+const bcrypt = require("bcrypt");
+const User = require("../models/user");
 
-exports.signUp = [
-  body("username")
-    .trim()
-    .isLength({ min: 6 })
-    .escape()
-    .withMessage("Username must be at least 6 characters"),
-  body("password")
-    .trim()
-    .isLength({ min: 8 })
-    .escape()
-    .withMessage("Password must be at least 8 characters"),
-  body("confirmPassword")
-    .trim()
-    .isLength({ min: 8 })
-    .escape()
-    .withMessage("Confirm Password must be at least 8 characters")
-    .custom(async (value, { req }) => {
-      if (value !== req.body.password) throw new Error("Password not match");
-    }),
-  async (req, res, next) => {
-    const errors = validationResult(req);
+exports.signUp = async (req, res, next) => {
+  try {
+    const { password, username, firstName, lastName } = req.body;
 
-    if (!errors.isEmpty()) return render();
-  },
-];
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new User({
+      firstName,
+      lastName,
+      username,
+      password: hashedPassword,
+    });
+
+    await user.save();
+  } catch (error) {
+    next(error);
+  }
+};

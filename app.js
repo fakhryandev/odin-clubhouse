@@ -3,10 +3,18 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+require("dotenv").config();
+const mongoose = require("mongoose");
 
 var indexRouter = require("./routes/index");
-// var authRouter = require("./routes/auth");
+var authRouter = require("./routes/auth");
 const clubhouseRouter = require("./routes/clubhouse");
+
+const MONGO_URI = process.env.MONGO_URI;
+mongoose.connect(MONGO_URI, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
 
 var app = express();
 
@@ -21,7 +29,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-// app.use("/members", authRouter);
+app.use("/members", authRouter);
 app.use("/clubhouse", clubhouseRouter);
 
 // catch 404 and forward to error handler
