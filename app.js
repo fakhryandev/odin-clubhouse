@@ -56,6 +56,18 @@ passport.use(
   })
 );
 
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
+});
+
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
 app.use("/", indexRouter);
 app.use("/members", authRouter);
 app.use("/clubhouse", clubhouseRouter);
