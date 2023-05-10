@@ -1,14 +1,20 @@
 var createError = require("http-errors");
 var express = require("express");
+const session = require("express-session");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 require("dotenv").config();
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 var indexRouter = require("./routes/index");
 var authRouter = require("./routes/auth");
 const clubhouseRouter = require("./routes/clubhouse");
+
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
 
 const MONGO_URI = process.env.MONGO_URI;
 mongoose.connect(MONGO_URI, {
@@ -27,6 +33,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      const foundUser = await User.findOne({ username });
+
+      if (!foundUser) {
+        return done(null, false, { message: "Incorrect username" });
+      }
+
+      const match = await bcrypt.compareSync(password, foundUser.password);
+
+      if (!match) {
+        return done(null, false, { message: "Incorrect password" });
+      }
+
+      return done(null, foundUser);
+    } catch (error) {
+      return done(null, false, { message: error });
+    }
+  })
+);
 
 app.use("/", indexRouter);
 app.use("/members", authRouter);
