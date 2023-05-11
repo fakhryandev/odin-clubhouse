@@ -19,3 +19,10 @@ exports.signUp = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.logout = (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err);
+    res.redirect("/");
+  });
+};
