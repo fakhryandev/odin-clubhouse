@@ -56,8 +56,17 @@ passport.use(
   })
 );
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser((user, done) => {
   done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  try {
+    const user = User.findById(id);
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
 });
 
 app.use(
@@ -67,6 +76,12 @@ app.use(
     saveUninitialized: true,
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
 
 app.use("/", indexRouter);
 app.use("/members", authRouter);
