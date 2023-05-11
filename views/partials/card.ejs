@@ -1,6 +1,11 @@
 <div class="card shadow-sm mb-4">
   <div class="card-body">
-    <h5 class="card-title"><%=message.title %></h5>
+    <div class="d-flex justify-content-between">
+      <h5 class="card-title"><%=message.title %></h5>
+      <% if(currentUser && currentUser.is_admin) { %>
+      <button class="btn btn-sm btn-danger">Trash</button>
+      <% } %>
+    </div>
     <% if(currentUser && currentUser.is_member) { %>
     <p class="mb-0">By <%= message.author.username %></p>
     <p><%= message.date_formatted %></p>
