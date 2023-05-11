@@ -3,7 +3,7 @@
     class="navbar navbar-expand-lg navbar-light bg-light justify-content-between"
   >
     <div class="container">
-      <span class="navbar-brand mb-0 h1">Club House</span>
+      <span class="navbar-brand mb-0 h1">ClubHouse</span>
       <div class="navbar-nav" style="gap: 8px">
         <% if(!currentUser) { %>
 
@@ -16,7 +16,17 @@
           data-target="#signUpModal"
           >Sign Up</a
         >
-        <% } else { %>
+        <% } else { %> <% if(!currentUser.is_member){ %>
+        <a class="btn btn-primary" href="#">Join Club</a>
+        <% } if(currentUser.is_member && !currentUser.is_admin) { %>
+        <a class="btn btn-primary" href="#">Become an Admin</a>
+        <%} %>
+        <a
+          class="btn btn-primary"
+          data-toggle="modal"
+          data-target="#messageModal"
+          >New Message</a
+        >
         <a class="btn btn-primary" href="members/logout">Logout</a>
         <% } %>
       </div>

@@ -8,8 +8,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-var indexRouter = require("./routes/index");
-var authRouter = require("./routes/auth");
+const authRouter = require("./routes/auth");
 const clubhouseRouter = require("./routes/clubhouse");
 
 const passport = require("passport");
@@ -60,9 +59,9 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
+passport.deserializeUser(async (id, done) => {
   try {
-    const user = User.findById(id);
+    const user = await User.findById(id);
     done(null, user);
   } catch (error) {
     done(error, null);
@@ -83,9 +82,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/", indexRouter);
+app.use("/", clubhouseRouter);
 app.use("/members", authRouter);
-app.use("/clubhouse", clubhouseRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
