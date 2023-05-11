@@ -2,12 +2,8 @@ const Message = require("../models/message");
 
 exports.index = async (req, res, next) => {
   try {
-    const messages = await Message.find().populate({
-      path: "author",
-      select: "firstName",
-    });
+    const messages = await Message.find().populate("author");
 
-    console.log(messages);
     res.render("index", { title: "Clubhouse", messages });
   } catch (error) {
     next(error);

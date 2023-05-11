@@ -26,3 +26,14 @@ exports.logout = (req, res, next) => {
     res.redirect("/");
   });
 };
+
+exports.joinMember = async (req, res, next) => {
+  try {
+    const userID = req.user._id;
+    await User.findByIdAndUpdate(userID, { is_member: true });
+
+    res.redirect("/");
+  } catch (error) {
+    next(error);
+  }
+};

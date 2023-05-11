@@ -17,7 +17,7 @@
           >Sign Up</a
         >
         <% } else { %> <% if(!currentUser.is_member){ %>
-        <a class="btn btn-primary" href="#">Join Club</a>
+        <a class="btn btn-primary" href="members/join">Join Club</a>
         <% } if(currentUser.is_member && !currentUser.is_admin) { %>
         <a class="btn btn-primary" href="#">Become an Admin</a>
         <%} %>
